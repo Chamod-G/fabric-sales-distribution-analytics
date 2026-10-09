@@ -263,8 +263,8 @@ flowchart LR
 <details>
 <summary>More screenshots</summary>
 
-![Fulfilment page](fabric_sales_distribution_analytics/docs/images/SD_fulfiment.png)
-![Inventory page](fabric_sales_distribution_analytics/docs/images/SD_inventory.png)
+![Fulfilment page](fabric_sales_distribution_analytics/docs/images/SD_fulfiment.PNG)
+![Inventory page](fabric_sales_distribution_analytics/docs/images/SD_inventory.PNG)
 ![Lineage view](docs/images/lineage.png)
 
 </details>
