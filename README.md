@@ -330,4 +330,4 @@ flowchart LR
 
 Built on the public **Sample Superstore** dataset. Shipments (including short-shipments) and weekly inventory snapshots are **synthesized** by `nb_00_generate_source_data` to simulate a distribution business; generated CSVs are not committed and can be recreated by running that notebook.
 
-**Author:** _Your Name_ · [LinkedIn](https://www.linkedin.com/in/your-profile) · [GitHub](https://github.com/your-username)
+**Author:** chamod gavindya · [LinkedIn](https://www.linkedin.com/in/chamod-gavindya) · [GitHub]((https://github.com/Chamod-G))
