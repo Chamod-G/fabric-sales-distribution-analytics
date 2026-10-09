@@ -257,7 +257,7 @@ flowchart LR
 
 | Sales & Distribution | Data Health |
 | --- | --- |
-| ![Executive page](fabric_sales_distribution_analytics/docs/images/SD_executive_overview.PNG) | ![Data health](fabric_sales_distribution_analytics/docs/images/data_healt_report.PNG) |
+| ![Executive page](fabric_sales_distribution_analytics/docs/images/SD_executive_overview.PNG) | ![Data health](fabric_sales_distribution_analytics/docs/images/data_health_report.PNG) |
 | Sales, margin, YoY growth, fill rate and days of cover by region, category and customer segment | Latest run results, pass rate and failed-test trend by table and test |
 
 <details>
