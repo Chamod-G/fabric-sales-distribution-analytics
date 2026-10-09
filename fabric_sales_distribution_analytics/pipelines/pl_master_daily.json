@@ -1,0 +1,171 @@
+{
+    "name": "pl_master_daily",
+    "objectId": "fadc6110-83ce-4a46-bf73-a3dc84a9a68f",
+    "properties": {
+        "activities": [
+            {
+                "name": "pl_ingest_sql_to_bronze",
+                "type": "InvokePipeline",
+                "dependsOn": [],
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "typeProperties": {
+                    "waitOnCompletion": true,
+                    "operationType": "InvokeFabricPipeline",
+                    "pipelineId": "f81b61cc-c3c9-43d5-915b-0a0e492b38e7",
+                    "workspaceId": "ee49793f-e114-4971-a6fd-8dbd5a75b0fd",
+                    "parameters": {
+                        "tables": [
+                            "orders",
+                            "order_lines",
+                            "shipments"
+                        ]
+                    }
+                },
+                "externalReferences": {
+                    "connection": "59b985f8-4d70-44c3-aa9a-f2bbcd231b58"
+                }
+            },
+            {
+                "name": "df_ingest_flatfiles",
+                "type": "RefreshDataflow",
+                "dependsOn": [],
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "typeProperties": {
+                    "dataflowId": "d9568c6a-3121-493b-bb62-98bb232fc585",
+                    "workspaceId": "ee49793f-e114-4971-a6fd-8dbd5a75b0fd",
+                    "notifyOption": "NoNotification",
+                    "dataflowType": "DataflowFabric",
+                    "executeMashupQueriesOnly": true
+                }
+            },
+            {
+                "name": "nb_10_bronze_to_silver",
+                "type": "TridentNotebook",
+                "dependsOn": [
+                    {
+                        "activity": "pl_ingest_sql_to_bronze",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    },
+                    {
+                        "activity": "df_ingest_flatfiles",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "typeProperties": {
+                    "notebookId": "41a9aa4f-1ec3-4b51-8768-a05be394ea3a",
+                    "workspaceId": "ee49793f-e114-4971-a6fd-8dbd5a75b0fd"
+                },
+                "externalReferences": {
+                    "connection": "31e7d7ad-4575-4a36-bc67-96a52393aeb3"
+                }
+            },
+            {
+                "name": "nb_20_silver_to_gold",
+                "type": "TridentNotebook",
+                "dependsOn": [
+                    {
+                        "activity": "nb_10_bronze_to_silver",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "typeProperties": {
+                    "notebookId": "e91a41b9-41f9-42a5-8fc5-3f14dfb561fa",
+                    "workspaceId": "ee49793f-e114-4971-a6fd-8dbd5a75b0fd"
+                },
+                "externalReferences": {
+                    "connection": "31e7d7ad-4575-4a36-bc67-96a52393aeb3"
+                }
+            },
+            {
+                "name": "nb_30_data_quality",
+                "type": "TridentNotebook",
+                "dependsOn": [
+                    {
+                        "activity": "nb_20_silver_to_gold",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "typeProperties": {
+                    "notebookId": "c442fc52-47b2-405c-a8da-b07ed01ce34c",
+                    "workspaceId": "ee49793f-e114-4971-a6fd-8dbd5a75b0fd"
+                },
+                "externalReferences": {
+                    "connection": "31e7d7ad-4575-4a36-bc67-96a52393aeb3"
+                }
+            },
+            {
+                "name": "sm_sales_distribution",
+                "type": "PBISemanticModelRefresh",
+                "dependsOn": [
+                    {
+                        "activity": "nb_30_data_quality",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "typeProperties": {
+                    "method": "POST",
+                    "operationType": "SemanticModelRefresh",
+                    "groupId": "ee49793f-e114-4971-a6fd-8dbd5a75b0fd",
+                    "datasetId": "3279375a-67ff-4a2d-8c22-f277181ef80b",
+                    "waitOnCompletion": true,
+                    "commitMode": "Transactional"
+                },
+                "externalReferences": {
+                    "connection": "a61db944-a08a-445c-8758-cc55d97126fa"
+                }
+            }
+        ],
+        "lastModifiedByObjectId": "407ce29b-1b29-4a4b-947a-f330db65056c",
+        "lastPublishTime": "2026-10-09T01:53:56Z"
+    }
+}

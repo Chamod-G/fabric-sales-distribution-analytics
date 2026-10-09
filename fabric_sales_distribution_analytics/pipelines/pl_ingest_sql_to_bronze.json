@@ -1,0 +1,127 @@
+{
+    "name": "pl_ingest_sql_to_bronze",
+    "objectId": "f81b61cc-c3c9-43d5-915b-0a0e492b38e7",
+    "properties": {
+        "activities": [
+            {
+                "name": "ForEach table",
+                "type": "ForEach",
+                "dependsOn": [],
+                "typeProperties": {
+                    "items": {
+                        "value": "@pipeline().parameters.tables",
+                        "type": "Expression"
+                    },
+                    "activities": [
+                        {
+                            "name": "Copy tables",
+                            "type": "Copy",
+                            "dependsOn": [],
+                            "policy": {
+                                "timeout": "0.12:00:00",
+                                "retry": 0,
+                                "retryIntervalInSeconds": 30,
+                                "secureOutput": false,
+                                "secureInput": false
+                            },
+                            "typeProperties": {
+                                "source": {
+                                    "type": "FabricSqlDatabaseSource",
+                                    "additionalColumns": [
+                                        {
+                                            "name": "ingested_at",
+                                            "value": {
+                                                "value": "@utcNow()",
+                                                "type": "Expression"
+                                            }
+                                        }
+                                    ],
+                                    "queryTimeout": "02:00:00",
+                                    "partitionOption": "None",
+                                    "datasetSettings": {
+                                        "annotations": [],
+                                        "connectionSettings": {
+                                            "name": "sql_source_sales",
+                                            "properties": {
+                                                "annotations": [],
+                                                "type": "FabricSqlDatabase",
+                                                "typeProperties": {
+                                                    "workspaceId": "ee49793f-e114-4971-a6fd-8dbd5a75b0fd",
+                                                    "artifactId": "69a02176-e2e6-4c32-84ff-aee48fe9df78"
+                                                },
+                                                "externalReferences": {
+                                                    "connection": "87877fd7-1b4e-4be7-a549-eb621bea2331"
+                                                }
+                                            }
+                                        },
+                                        "type": "FabricSqlDatabaseTable",
+                                        "schema": [],
+                                        "typeProperties": {
+                                            "schema": "sales",
+                                            "table": {
+                                                "value": "@item()",
+                                                "type": "Expression"
+                                            }
+                                        }
+                                    }
+                                },
+                                "sink": {
+                                    "type": "LakehouseTableSink",
+                                    "tableActionOption": "OverwriteSchema",
+                                    "partitionOption": "None",
+                                    "applyVOrder": false,
+                                    "enableTimestampNtz": false,
+                                    "datasetSettings": {
+                                        "annotations": [],
+                                        "linkedService": {
+                                            "name": "lh_bronze",
+                                            "properties": {
+                                                "annotations": [],
+                                                "type": "Lakehouse",
+                                                "typeProperties": {
+                                                    "workspaceId": "ee49793f-e114-4971-a6fd-8dbd5a75b0fd",
+                                                    "artifactId": "a1a91e34-0acc-4410-bbfb-714c778e7661",
+                                                    "rootFolder": "Tables"
+                                                }
+                                            }
+                                        },
+                                        "type": "LakehouseTable",
+                                        "schema": [],
+                                        "typeProperties": {
+                                            "schema": "",
+                                            "table": {
+                                                "value": "@concat('sql_', item())",
+                                                "type": "Expression"
+                                            }
+                                        }
+                                    }
+                                },
+                                "enableStaging": false,
+                                "translator": {
+                                    "type": "TabularTranslator",
+                                    "typeConversion": true,
+                                    "typeConversionSettings": {
+                                        "allowDataTruncation": true,
+                                        "treatBooleanAsNumber": false
+                                    }
+                                }
+                            }
+                        }
+                    ]
+                }
+            }
+        ],
+        "parameters": {
+            "tables": {
+                "type": "array",
+                "defaultValue": [
+                    "orders",
+                    "order_lines",
+                    "shipments"
+                ]
+            }
+        },
+        "lastModifiedByObjectId": "407ce29b-1b29-4a4b-947a-f330db65056c",
+        "lastPublishTime": "2026-10-03T14:20:15Z"
+    }
+}

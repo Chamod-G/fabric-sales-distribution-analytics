@@ -1,0 +1,282 @@
+{
+    "name": "pl_seed_sql_source",
+    "objectId": "7ddc52d7-f1da-41df-a8f4-5ac5660d0727",
+    "properties": {
+        "activities": [
+            {
+                "name": "oder_lines",
+                "type": "Copy",
+                "state": "Inactive",
+                "onInactiveMarkAs": "Succeeded",
+                "dependsOn": [],
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "typeProperties": {
+                    "source": {
+                        "type": "DelimitedTextSource",
+                        "storeSettings": {
+                            "type": "LakehouseReadSettings",
+                            "recursive": true,
+                            "enablePartitionDiscovery": false
+                        },
+                        "formatSettings": {
+                            "type": "DelimitedTextReadSettings"
+                        },
+                        "datasetSettings": {
+                            "annotations": [],
+                            "linkedService": {
+                                "name": "lh_bronze",
+                                "properties": {
+                                    "annotations": [],
+                                    "type": "Lakehouse",
+                                    "typeProperties": {
+                                        "workspaceId": "ee49793f-e114-4971-a6fd-8dbd5a75b0fd",
+                                        "artifactId": "a1a91e34-0acc-4410-bbfb-714c778e7661",
+                                        "rootFolder": "Files"
+                                    }
+                                }
+                            },
+                            "type": "DelimitedText",
+                            "typeProperties": {
+                                "location": {
+                                    "type": "LakehouseLocation",
+                                    "fileName": "order_lines.csv",
+                                    "folderPath": "seed"
+                                },
+                                "columnDelimiter": ",",
+                                "escapeChar": "\\",
+                                "firstRowAsHeader": true,
+                                "quoteChar": "\""
+                            },
+                            "schema": []
+                        }
+                    },
+                    "sink": {
+                        "type": "FabricSqlDatabaseSink",
+                        "writeBehavior": "insert",
+                        "sqlWriterUseTableLock": false,
+                        "datasetSettings": {
+                            "annotations": [],
+                            "connectionSettings": {
+                                "name": "sql_source_sales",
+                                "properties": {
+                                    "annotations": [],
+                                    "type": "FabricSqlDatabase",
+                                    "typeProperties": {
+                                        "workspaceId": "ee49793f-e114-4971-a6fd-8dbd5a75b0fd",
+                                        "artifactId": "69a02176-e2e6-4c32-84ff-aee48fe9df78"
+                                    },
+                                    "externalReferences": {
+                                        "connection": "87877fd7-1b4e-4be7-a549-eb621bea2331"
+                                    }
+                                }
+                            },
+                            "type": "FabricSqlDatabaseTable",
+                            "schema": [],
+                            "typeProperties": {
+                                "schema": "sales",
+                                "table": "order_lines"
+                            }
+                        }
+                    },
+                    "enableStaging": false,
+                    "translator": {
+                        "type": "TabularTranslator",
+                        "typeConversion": true,
+                        "typeConversionSettings": {
+                            "allowDataTruncation": true,
+                            "treatBooleanAsNumber": false
+                        }
+                    }
+                }
+            },
+            {
+                "name": "orders",
+                "type": "Copy",
+                "dependsOn": [],
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "typeProperties": {
+                    "source": {
+                        "type": "DelimitedTextSource",
+                        "storeSettings": {
+                            "type": "LakehouseReadSettings",
+                            "recursive": false,
+                            "enablePartitionDiscovery": false
+                        },
+                        "formatSettings": {
+                            "type": "DelimitedTextReadSettings"
+                        },
+                        "datasetSettings": {
+                            "annotations": [],
+                            "linkedService": {
+                                "name": "lh_bronze",
+                                "properties": {
+                                    "annotations": [],
+                                    "type": "Lakehouse",
+                                    "typeProperties": {
+                                        "workspaceId": "ee49793f-e114-4971-a6fd-8dbd5a75b0fd",
+                                        "artifactId": "a1a91e34-0acc-4410-bbfb-714c778e7661",
+                                        "rootFolder": "Files"
+                                    }
+                                }
+                            },
+                            "type": "DelimitedText",
+                            "typeProperties": {
+                                "location": {
+                                    "type": "LakehouseLocation",
+                                    "fileName": "orders.csv",
+                                    "folderPath": "seed"
+                                },
+                                "columnDelimiter": ",",
+                                "escapeChar": "\\",
+                                "firstRowAsHeader": true,
+                                "quoteChar": "\""
+                            },
+                            "schema": []
+                        }
+                    },
+                    "sink": {
+                        "type": "FabricSqlDatabaseSink",
+                        "writeBehavior": "insert",
+                        "sqlWriterUseTableLock": false,
+                        "datasetSettings": {
+                            "annotations": [],
+                            "connectionSettings": {
+                                "name": "sql_source_sales",
+                                "properties": {
+                                    "annotations": [],
+                                    "type": "FabricSqlDatabase",
+                                    "typeProperties": {
+                                        "workspaceId": "ee49793f-e114-4971-a6fd-8dbd5a75b0fd",
+                                        "artifactId": "69a02176-e2e6-4c32-84ff-aee48fe9df78"
+                                    },
+                                    "externalReferences": {
+                                        "connection": "87877fd7-1b4e-4be7-a549-eb621bea2331"
+                                    }
+                                }
+                            },
+                            "type": "FabricSqlDatabaseTable",
+                            "schema": [],
+                            "typeProperties": {
+                                "schema": "sales",
+                                "table": "orders"
+                            }
+                        }
+                    },
+                    "enableStaging": false,
+                    "translator": {
+                        "type": "TabularTranslator",
+                        "typeConversion": true,
+                        "typeConversionSettings": {
+                            "allowDataTruncation": true,
+                            "treatBooleanAsNumber": false
+                        }
+                    }
+                }
+            },
+            {
+                "name": "shipments",
+                "type": "Copy",
+                "dependsOn": [],
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "typeProperties": {
+                    "source": {
+                        "type": "DelimitedTextSource",
+                        "storeSettings": {
+                            "type": "LakehouseReadSettings",
+                            "recursive": true,
+                            "enablePartitionDiscovery": false
+                        },
+                        "formatSettings": {
+                            "type": "DelimitedTextReadSettings"
+                        },
+                        "datasetSettings": {
+                            "annotations": [],
+                            "linkedService": {
+                                "name": "lh_bronze",
+                                "properties": {
+                                    "annotations": [],
+                                    "type": "Lakehouse",
+                                    "typeProperties": {
+                                        "workspaceId": "ee49793f-e114-4971-a6fd-8dbd5a75b0fd",
+                                        "artifactId": "a1a91e34-0acc-4410-bbfb-714c778e7661",
+                                        "rootFolder": "Files"
+                                    }
+                                }
+                            },
+                            "type": "DelimitedText",
+                            "typeProperties": {
+                                "location": {
+                                    "type": "LakehouseLocation",
+                                    "fileName": "shipments.csv",
+                                    "folderPath": "seed"
+                                },
+                                "columnDelimiter": ",",
+                                "escapeChar": "\\",
+                                "firstRowAsHeader": true,
+                                "quoteChar": "\""
+                            },
+                            "schema": []
+                        }
+                    },
+                    "sink": {
+                        "type": "FabricSqlDatabaseSink",
+                        "writeBehavior": "insert",
+                        "sqlWriterUseTableLock": false,
+                        "datasetSettings": {
+                            "annotations": [],
+                            "connectionSettings": {
+                                "name": "sql_source_sales",
+                                "properties": {
+                                    "annotations": [],
+                                    "type": "FabricSqlDatabase",
+                                    "typeProperties": {
+                                        "workspaceId": "ee49793f-e114-4971-a6fd-8dbd5a75b0fd",
+                                        "artifactId": "69a02176-e2e6-4c32-84ff-aee48fe9df78"
+                                    },
+                                    "externalReferences": {
+                                        "connection": "87877fd7-1b4e-4be7-a549-eb621bea2331"
+                                    }
+                                }
+                            },
+                            "type": "FabricSqlDatabaseTable",
+                            "schema": [],
+                            "typeProperties": {
+                                "schema": "sales",
+                                "table": "shipments"
+                            }
+                        }
+                    },
+                    "enableStaging": false,
+                    "translator": {
+                        "type": "TabularTranslator",
+                        "typeConversion": true,
+                        "typeConversionSettings": {
+                            "allowDataTruncation": true,
+                            "treatBooleanAsNumber": false
+                        }
+                    }
+                }
+            }
+        ],
+        "lastModifiedByObjectId": "407ce29b-1b29-4a4b-947a-f330db65056c",
+        "lastPublishTime": "2026-10-03T12:15:05Z"
+    }
+}
