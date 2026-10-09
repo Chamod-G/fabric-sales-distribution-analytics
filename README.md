@@ -257,7 +257,7 @@ flowchart LR
 
 | Sales & Distribution | Data Health |
 | --- | --- |
-| ![Executive page](docs/images/SD_executive_overview.png) | ![Data health](docs/images/data_health.png) |
+| ![Executive page](docs/images/SD_executive_overview.png) | ![Data health](docs/images/data_health_report.png) |
 | Sales, margin, YoY growth, fill rate and days of cover by region, category and customer segment | Latest run results, pass rate and failed-test trend by table and test |
 
 <details>
